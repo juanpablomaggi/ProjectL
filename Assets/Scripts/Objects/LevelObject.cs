@@ -47,8 +47,7 @@ public class LevelObject : MonoBehaviour, ITileContent
         ConfigureParameters(data.parameters);
     }
 
-    public void ConfigureParameters(
-        LevelObjectParameters parameters)
+    public void ConfigureParameters(LevelObjectParameters parameters)
     {
         foreach (var behavior in behaviors.Values)
         {
@@ -74,23 +73,20 @@ public class LevelObject : MonoBehaviour, ITileContent
 
     public virtual void PlaceOnTile(Tile tile)
     {
+        if (tile == null) return;
+
         currentTile = tile;
-
-        if (tile != null)
-        {
-            GridPosition = tile.GridPosition;
-        }
-
+        GridPosition = tile.GridPosition;
         OnPlaceOnTile?.Invoke();
+        GetBehavior<LightEmmiterComponent>()?.ApplyIllumination(GridPosition, Orientation, Map);
     }
 
     public virtual void RemoveFromTile(Tile tile)
     {
-        if (currentTile != tile)
-            return;
+        if (currentTile != tile) return;
 
         currentTile = null;
-
         OnRemoveFromTile?.Invoke();
+        GetBehavior<LightEmmiterComponent>()?.RemoveIllumination(GridPosition, Orientation, Map);
     }
 }

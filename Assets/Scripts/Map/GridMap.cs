@@ -10,9 +10,9 @@ public class GridMap : MonoBehaviour
     private float tileSize;
 
     private Vector3 origin;
-    private List<LevelObject> objects;
 
     private MovementResolver movementResolver;
+    private LightResolver lightResolver;
 
     [SerializeField]
     private LevelData levelData;
@@ -29,8 +29,9 @@ public class GridMap : MonoBehaviour
         tileSize = levelData.tileSize;
         origin = levelData.origin;
         tiles = new Tile[width, height];
+
         movementResolver = new MovementResolver(this);
-        objects = new List<LevelObject>(); 
+        lightResolver = new LightResolver(this);
 
         for (int x = 0; x < width; x++)
         {
@@ -76,27 +77,6 @@ public class GridMap : MonoBehaviour
                 continue;
             }
 
-            objects.Add(levelObj);
-        }
-
-        RefreshObjects();
-    }
-
-    private void RefreshObjects()
-    {
-        RecalculateIllumination();
-    }
-
-    private void RecalculateIllumination()
-    {
-        foreach (var obj in objects)
-        {
-            var emitter = obj.GetBehavior<LightEmmiterComponent>();
-
-            if (emitter == null || obj.CurrentTile == null) continue;
-
-            emitter.RemoveIllumination(obj.CurrentTile, this, obj.Orientation);
-            emitter.ApplyIllumination(obj.CurrentTile, this, obj.Orientation);
         }
     }
 
@@ -114,6 +94,16 @@ public class GridMap : MonoBehaviour
     public bool TryMoveContinuously(LevelObject obj, Vector3 targetWorldPosition)
     {
         return movementResolver != null && movementResolver.TryMoveContinuously(obj, targetWorldPosition);
+    }
+
+    public void ApplyIllumination(IEnumerable<Vector2Int> tiles, LevelObject source)
+    {
+        lightResolver.ApplyIllumination(tiles, source);
+    }
+
+    public void RemoveIllumination(IEnumerable<Vector2Int> tiles, LevelObject source)
+    {
+        lightResolver.RemoveIllumination(tiles, source);
     }
 
     public bool IsValidPosition(Vector2Int gridPosition)

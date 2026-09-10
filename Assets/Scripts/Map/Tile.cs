@@ -14,13 +14,13 @@ public class Tile
     public bool IsIlluminated => lightEmitters.Count > 0;
 
     private readonly Dictionary<TileLayer, LevelObject> contents;
-    private readonly HashSet<LightEmmiterComponent> lightEmitters;
+    private readonly HashSet<LevelObject> lightEmitters;
 
     public Tile(Vector2Int gridPos, Vector3 worldPos)
     {
         GridPosition = gridPos;
         WorldPosition = worldPos;
-        lightEmitters = new HashSet<LightEmmiterComponent>();
+        lightEmitters = new HashSet<LevelObject>();
         contents = new Dictionary<TileLayer, LevelObject>();
     }
 
@@ -88,17 +88,17 @@ public class Tile
         return false;
     }
 
-    public void AddLightSource(LightEmmiterComponent light)
+    public void AddLightSource(LevelObject source)
     {
-        if (lightEmitters.Add(light) && lightEmitters.Count == 1)
+        if (lightEmitters.Add(source) && lightEmitters.Count == 1)
         {
             OnIlluminationChanged?.Invoke(this, true);
         }
     }
 
-    public void RemoveLightSource(LightEmmiterComponent light)
+    public void RemoveLightSource(LevelObject source)
     {
-        if (lightEmitters.Remove(light) && lightEmitters.Count == 0)
+        if (lightEmitters.Remove(source) && lightEmitters.Count == 0)
         {
             OnIlluminationChanged?.Invoke(this, false);
         }

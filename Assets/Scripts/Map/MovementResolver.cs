@@ -62,8 +62,6 @@ public class MovementResolver
 
         if (data.ChangesTile && !ChangeTile(data)) return false;
 
-        if (data.ChangesTile) UpdateIllumination(data.Object, data.OriginTile, data.TargetTile);
-
         movable.Move(data);
         return true;
     }
@@ -85,16 +83,5 @@ public class MovementResolver
         }
 
         return true;
-    }
-
-    private void UpdateIllumination(LevelObject obj, Tile originTile, Tile targetTile)
-    {
-        LightEmmiterComponent emitter = obj.GetBehavior<LightEmmiterComponent>();
-
-        if (emitter == null) return;
-
-        emitter.RemoveIllumination(originTile, map, obj.Orientation);
-
-        emitter.ApplyIllumination(targetTile, map, obj.Orientation);
     }
 }

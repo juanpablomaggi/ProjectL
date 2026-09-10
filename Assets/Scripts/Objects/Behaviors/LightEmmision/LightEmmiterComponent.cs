@@ -1,3 +1,4 @@
+using System.Numerics;
 using UnityEngine;
 
 public class LightEmmiterComponent : IObjectBehavior
@@ -26,26 +27,16 @@ public class LightEmmiterComponent : IObjectBehavior
         }
     }
 
-    public void ApplyIllumination(Tile originTile, GridMap map, Direction orientation)
+    public void ApplyIllumination(Vector2Int gridPosition, Direction orientation, GridMap map)
     {
-        var tiles = emitter.GetIlluminatedTiles(originTile.GridPosition, orientation);
-        foreach (var pos in tiles)
-        {
-            var tile = map.GetTile(pos);
-            if (tile != null)
-                tile.AddLightSource(this);
-        }
+        var tiles = emitter.GetIlluminatedTiles(gridPosition, orientation);
+        map.ApplyIllumination(tiles, null);
     }
 
-    public void RemoveIllumination(Tile originTile, GridMap map, Direction orientation)
+    public void RemoveIllumination(Vector2Int gridPosition, Direction orientation, GridMap map)
     {
-        var tiles = emitter.GetIlluminatedTiles(originTile.GridPosition, orientation);
-        foreach (var pos in tiles)
-        {
-            var tile = map.GetTile(pos);
-            if (tile != null)
-                tile.RemoveLightSource(this);
-        }
+        var tiles = emitter.GetIlluminatedTiles(gridPosition, orientation);
+        map.RemoveIllumination(tiles, null);
     }
 }
 

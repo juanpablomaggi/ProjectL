@@ -12,10 +12,10 @@ public class Reflector : LevelObject
     {
         LightEmmiterComponent lightEmmiter = GetBehavior<LightEmmiterComponent>();
 
-        lightEmmiter.RemoveIllumination(currentTile, map, Orientation);
+        lightEmmiter.RemoveIllumination(GridPosition, Orientation, Map);
         Direction newDirection = Orientation.RotateClockwise();
         Rotate(newDirection);
-        lightEmmiter.ApplyIllumination(currentTile, map, Orientation);
+        lightEmmiter.ApplyIllumination(GridPosition, Orientation, Map);
     }
 
 #if UNITY_EDITOR
