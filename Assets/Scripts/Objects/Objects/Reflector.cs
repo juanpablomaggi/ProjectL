@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class Reflector : LevelObject
 {
-    public void Setup()
+    protected override void InitializeBehaviors()
     {
+        base.InitializeBehaviors();
         var interactable = GetBehavior<InteractableComponent>();
         interactable.SetupAction(Reflect);
     }
@@ -12,10 +13,10 @@ public class Reflector : LevelObject
     {
         LightEmmiterComponent lightEmmiter = GetBehavior<LightEmmiterComponent>();
 
-        lightEmmiter.RemoveIllumination(GridPosition, Orientation, Map);
+        lightEmmiter.RemoveIllumination(GridPosition, Orientation, Map, this);
         Direction newDirection = Orientation.RotateClockwise();
         Rotate(newDirection);
-        lightEmmiter.ApplyIllumination(GridPosition, Orientation, Map);
+        lightEmmiter.ApplyIllumination(GridPosition, Orientation, Map, this);
     }
 
 #if UNITY_EDITOR

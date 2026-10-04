@@ -16,4 +16,18 @@ public class LevelObjectData
 
     [Header("Parameters")]
     public LevelObjectParameters parameters;
+
+    public LevelObjectData Clone()
+    {
+        LevelObjectData newData = new LevelObjectData();
+        newData.objectId = objectId;
+        newData.prefab = prefab;
+
+        newData.gridPosition = gridPosition;
+        newData.layer = layer;
+        
+        newData.orientation = orientation;
+        newData.parameters = parameters.Clone();
+        return newData;
+    }
 }

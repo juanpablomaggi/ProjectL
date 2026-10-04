@@ -31,6 +31,16 @@ public class ContinuosMovementBehavior : IMovableBehavior
 
     public void Move(MovementData data)
     {
+        Vector3 delta = data.TargetWorldPosition - data.Object.transform.position;
         data.Object.transform.position = data.TargetWorldPosition;
+
+        if (data.LinkedObjects == null)
+            return;
+
+        foreach (LevelObject linkedObject in data.LinkedObjects)
+        {
+            if (linkedObject != null)
+                linkedObject.transform.position += delta;
+        }
     }
 }

@@ -12,19 +12,21 @@ public class LevelObject : MonoBehaviour, ITileContent
     protected Action OnPlaceOnTile;
     protected Action OnRemoveFromTile;
 
+    public event Action<Tile> OnPlacedOnTile;
+    public event Action<Tile> OnRemovedFromTile;
+    public event Action<Direction> OnOrientationChanged;
+
     protected Tile currentTile;
-    protected LevelObjectData data;
+    public LevelObjectData Data { get; protected set; }
     protected Dictionary<Type, IObjectBehavior> behaviors = new();
     protected GridMap map;
 
     public Tile CurrentTile => currentTile;
     public GridMap Map => map;
 
-    public virtual void Initialize(
-        LevelObjectData objectData,
-        GridMap gridMap)
+    public virtual void Initialize(LevelObjectData objectData, GridMap gridMap)
     {
-        data = objectData;
+        Data = objectData;
         ObjectId = objectData.objectId;
         GridPosition = objectData.gridPosition;
         Layer = objectData.layer;
@@ -44,7 +46,7 @@ public class LevelObject : MonoBehaviour, ITileContent
         behaviors.Add(typeof(StateComponent), new StateComponent());
         behaviors.Add(typeof(ActivableComponent), new ActivableComponent());
 
-        ConfigureParameters(data.parameters);
+        ConfigureParameters(Data.parameters);
     }
 
     public void ConfigureParameters(LevelObjectParameters parameters)
@@ -69,6 +71,7 @@ public class LevelObject : MonoBehaviour, ITileContent
     {
         Orientation = newDirection;
         transform.rotation = Orientation.ToRotation();
+        OnOrientationChanged?.Invoke(Orientation);
     }
 
     public virtual void PlaceOnTile(Tile tile)
@@ -78,7 +81,8 @@ public class LevelObject : MonoBehaviour, ITileContent
         currentTile = tile;
         GridPosition = tile.GridPosition;
         OnPlaceOnTile?.Invoke();
-        GetBehavior<LightEmmiterComponent>()?.ApplyIllumination(GridPosition, Orientation, Map);
+        GetBehavior<LightEmmiterComponent>()?.ApplyIllumination(GridPosition, Orientation, Map, this);
+        OnPlacedOnTile?.Invoke(tile);
     }
 
     public virtual void RemoveFromTile(Tile tile)
@@ -87,6 +91,7 @@ public class LevelObject : MonoBehaviour, ITileContent
 
         currentTile = null;
         OnRemoveFromTile?.Invoke();
-        GetBehavior<LightEmmiterComponent>()?.RemoveIllumination(GridPosition, Orientation, Map);
+        GetBehavior<LightEmmiterComponent>()?.RemoveIllumination(GridPosition, Orientation, Map, this);
+        OnRemovedFromTile?.Invoke(tile);
     }
 }

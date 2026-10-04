@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MovementResolver
@@ -18,11 +19,11 @@ public class MovementResolver
         if (targetTile == null)
             return false;
 
-        var movementData = new MovementData(obj, originTile, targetTile, targetTile.WorldPosition);
+        var movementData = new MovementData(obj, originTile, targetTile, targetTile.WorldPosition, movable.AttachedObjects);
         return TryExecuteMovement(movable, movementData);
     }
 
-    public bool TryMoveContinuously(LevelObject obj, Vector3 targetWorldPosition)
+    public bool TryMoveContinuously(LevelObject obj, Vector3 targetWorldPosition, IEnumerable<LevelObject> linkedObjects = null)
     {
         if (!TryGetMovementContext(obj, out var movable, out var originTile))
             return false;
@@ -34,7 +35,7 @@ public class MovementResolver
         if (targetTile == null)
             return false;
 
-        var movementData = new MovementData(obj, originTile, targetTile, targetWorldPosition);
+        var movementData = new MovementData(obj, originTile, targetTile, targetWorldPosition, movable.AttachedObjects);
         return TryExecuteMovement(movable, movementData);
     }
 

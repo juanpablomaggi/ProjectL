@@ -1,8 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MovableComponent : IObjectBehavior
 {
     private IMovableBehavior movableBehavior;
+
+    public List<LevelObject> AttachedObjects { get; private set; } = new();
 
     public MovableType MovableType { get; private set; }
     public MovementType MovementType { get; private set; }
@@ -54,6 +57,18 @@ public class MovableComponent : IObjectBehavior
     {
         if (!IsMovable) return;
         movableBehavior.Move(data);
+    }
+
+    public void AttachElement(LevelObject element)
+    {
+        if (AttachedObjects.Contains(element)) return;
+        AttachedObjects.Add(element);
+    }
+
+    public void RemoveElement(LevelObject element)
+    {
+        if (AttachedObjects.Contains(element))
+            AttachedObjects.Remove(element);
     }
 }
 

@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class InteractableComponent : IObjectBehavior
 {
-    public IInteractableBehavior interactableBehavior;
+    private IInteractableBehavior interactableBehavior;
+    public InteractionType InteractionType => interactableBehavior?.InteractionType ?? InteractionType.NONE;
 
     public void Configure(LevelObjectParameters data)
     {
@@ -31,7 +32,7 @@ public class InteractableComponent : IObjectBehavior
     {
         if (interactableBehavior is InteractInteractionBehavior actionBehavior)
         {
-            (interactableBehavior as InteractInteractionBehavior).OnInteract += action;
+            actionBehavior.OnInteract += action;
         }
     }
 }
